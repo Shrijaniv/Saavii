@@ -120,6 +120,10 @@ Memory and reasoning run alongside:
 | `apps/api`, `workers/*` | any package, per its rules above | external provider APIs directly (go through `signals`), the database directly (go through `store`) |
 | `apps/mobile` | `apps/api` over HTTP; `contracts` for types | any backend package directly |
 
+### Enforcement
+
+Documentation is the spec, not the enforcement. When implementation begins, the §4 and §6 rules must be encoded as **automated architecture checks** run in CI — forbidden-import / dependency rules (e.g. ESLint `no-restricted-imports` or dependency-cruiser) that fail the build on: a pure engine importing anything with I/O, any package other than `store` importing Prisma or a Supabase data client, any package other than its owner importing a provider SDK (model, push, auth, Canvas/Google), and any cross-package import not permitted by the §6 matrix. The first change that adds package manifests must add these checks in the same change — the boundaries should never be enforceable-but-unenforced. Tool choice is recorded in `docs/decisions/` when made.
+
 ## 7. Recorded stack decisions
 
 These are settled. Do not re-litigate them. Decisions the handbook leaves open must have a record in `docs/decisions/`; record new decisions as a file there and list them here.

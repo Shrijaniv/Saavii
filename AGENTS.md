@@ -19,6 +19,10 @@ You are implementing against a documented scaffold. The documentation is the spe
 - **Each external boundary has exactly one owner.** `signals` owns external data-source integrations (Canvas, Google Calendar, Gmail — including the calendar mirror-out). `reasoning` owns the model provider (proposals only, never durable writes). `notifications` owns the push provider. `trust` owns the auth provider and audit sinks. No other package calls any external service, and no boundary system calls a provider it doesn't own.
 - **Surface spec conflicts; never resolve them silently.** If the handbook, `ARCHITECTURE.md`, a folder README, or your task instructions disagree with each other, stop and report the conflict. The same applies when the spec is silent on something you need: record it as an **OPEN QUESTION** in the owning folder's README and in `ARCHITECTURE.md` §9 — do not invent an answer.
 
+## When implementation begins
+
+The change that introduces package manifests must also introduce the automated architecture checks described in `ARCHITECTURE.md` §6 "Enforcement" (forbidden-import / dependency rules in CI). Until those checks exist, this document and the folder READMEs are the only guard — which is exactly why they must be read every session.
+
 ## Style expectations
 
 - Every recommendation-producing path must also produce a plain-language explanation (Volume I, Chapter 4, Principle 7). An unexplained priority, plan change, or notification is a bug.
