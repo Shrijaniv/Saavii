@@ -1,0 +1,9 @@
+// Module: store/schema.prisma
+// Responsibility: The PostgreSQL schema (Supabase) — the ONLY schema location in the repo.
+// Covers the Volume IV Operational Store data set: users/profiles, integrations, classes,
+// tasks, external events, plans + schedule blocks, execution records, conflicts,
+// notifications, daily/capacity snapshots, insights — plus memory node/edge tables
+// (reached only through packages/memory).
+//
+// PLACEHOLDER — no models yet. Read packages/store/README.md and /ARCHITECTURE.md first.
+// OPEN QUESTION (#3, ARCHITECTURE.md §9): memory tables in this schema or a separate one?
