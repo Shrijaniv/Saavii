@@ -16,6 +16,7 @@ The load-bearing decisions are distilled into [`CLAUDE.md`](./CLAUDE.md) and mad
 | Path | What it is |
 |---|---|
 | `docs/handbook/` | The canonical Saavii Handbook (Volumes I–V). Read-only source of truth. |
+| `docs/decisions/` | Decision records for choices the handbook leaves open; cited from `ARCHITECTURE.md` §7. |
 | `CLAUDE.md` | Non-negotiable constraints every agent loads before working. |
 | `ARCHITECTURE.md` | The authoritative technical contract. All folder docs conform to it. |
 | `AGENTS.md` | Imperative guide + done-checklist for implementation agents. |

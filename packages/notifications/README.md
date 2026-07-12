@@ -2,9 +2,9 @@
 
 **Single responsibility:** Route proactive outputs according to urgency, quiet hours, user preferences, batching rules, and **interruption value** (Volume IV). Owns push delivery — no other package sends notifications.
 
-**Inputs:** Notification requests from orchestrators (morning briefing content, priority changes, deadline/capacity risks, leave-soon alerts, end-of-day prompts, weekly reflections, conflict alerts). **Outputs:** Delivered (or deliberately withheld/batched) notifications; delivery state persisted via `store`.
+**Inputs:** Notification requests from orchestrators (morning briefing content, priority changes, deadline/capacity risks, leave-soon alerts, end-of-day prompts, weekly reflections, conflict alerts), plus the user's preferences and quiet-hours state, **passed in** by the orchestrator. **Outputs:** Delivered pushes, and delivery outcomes (sent / withheld / batched, with reasons) returned to the orchestrator, which persists them via `store`.
 
-**May talk to:** The push provider, `store` (delivery state, preferences), `contracts`, `trust`. **May NOT talk to:** engines, `signals`, `reasoning` — content is composed upstream; this package decides *whether, when, and how* it reaches the user.
+**May talk to:** The push provider, `contracts`, `trust`. **May NOT talk to:** `store` — orchestrators pass preferences in and persist the returned delivery outcomes (`ARCHITECTURE.md` §4) — nor engines, `signals`, `reasoning` — content is composed upstream; this package decides *whether, when, and how* it reaches the user.
 
 **Rules it must honor**
 - **Earn the right to interrupt** (Volume I, Ch. 4, Principle 5): every notification must save time, reduce stress, prevent a mistake, protect a commitment, create joy, or improve wellbeing. If it does none of these, it is not sent.

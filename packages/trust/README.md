@@ -2,9 +2,9 @@
 
 **Single responsibility:** Cross-cutting controls (Volume IV): authentication, authorization, token security, encryption, consent, audit logs, data retention, export, and deletion.
 
-**Inputs:** Auth/consent/audit calls from every other part of the system. **Outputs:** Verified identities and sessions, authorization decisions, consent state, audit records, executed export/deletion workflows.
+**Inputs:** Auth/consent/audit calls from **orchestrators and boundary systems**. Pure engines never call `trust` — their callers pass in already-authorized, consent-filtered inputs (`ARCHITECTURE.md` §4). **Outputs:** Verified identities and sessions, authorization decisions, consent state, audit records, executed export/deletion workflows.
 
-**May talk to:** The auth provider (**Supabase Auth** — recorded decision, `ARCHITECTURE.md` §7) and audit sinks. **May NOT:** depend on any domain package — everyone may call `trust`; `trust` calls no one.
+**May talk to:** The auth provider (**Supabase Auth** — decision record: `docs/decisions/0003-supabase-split.md`) and audit sinks. **May NOT:** depend on any domain package — `trust` calls no one.
 
 **What lives here**
 - Supabase Auth client wiring, session/token verification, and the documented RLS policy. `apps/api` consumes auth middleware *from* this package; `apps/mobile` gets its sign-in flow contract from here.

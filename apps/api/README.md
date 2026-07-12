@@ -2,7 +2,7 @@
 
 **Single responsibility:** Expose the Volume IV API domains over HTTP and orchestrate the packages: authenticate (via `trust`), fetch (via `store`/`signals`), invoke pure engines, persist results (via `store`), and route user-facing output (via `notifications`).
 
-> Recorded decision (`ARCHITECTURE.md` §7): this is a **dedicated Node.js service**, not Next.js API routes. Volume IV allowed either; the founder chose Node.js.
+> Recorded decision (`ARCHITECTURE.md` §7): this is a **dedicated Node.js service**, not Next.js API routes. Volume IV allowed either; decision record: `docs/decisions/0001-dedicated-node-api.md`.
 
 **Inputs:** HTTP requests from `apps/mobile`. **Outputs:** JSON responses; orchestrated side effects through boundary packages only.
 

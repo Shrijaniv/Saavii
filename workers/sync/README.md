@@ -2,7 +2,7 @@
 
 **Responsibility (Volume IV):** Incrementally fetch changes from connected providers and emit normalized domain events.
 
-**Orchestrates:** `signals` (adapters + change detection) → `contracts` events → `store` (persist events, advance sync cursors).
+**Orchestrates:** load sync cursors via `store` → `signals` adapters + change detection (cursors passed in) → receive normalized `contracts` events and updated cursors → persist both via `store`. `signals` itself never touches the database (`ARCHITECTURE.md` §4).
 
 **Rules:**
 - Idempotent: replays never duplicate events (Volume V, Phase 2).
