@@ -15,3 +15,5 @@ Records for choices the handbook (`docs/handbook/`) deliberately leaves open. Wh
 | [0001](./0001-dedicated-node-api.md) | Dedicated Node.js service for `apps/api` | Accepted |
 | [0002](./0002-npm-workspaces.md) | npm workspaces for monorepo tooling | Accepted |
 | [0003](./0003-supabase-split.md) | Supabase split by responsibility: Postgres → `store`, Auth → `trust` | Accepted |
+| [0004](./0004-fastify-api-framework.md) | Fastify as the HTTP framework for `apps/api` | Accepted |
+| [0005](./0005-bootstrap-toolchain.md) | Bootstrap toolchain: dependency-cruiser, Vitest, strict TypeScript, CI | Accepted |

@@ -1,0 +1,20 @@
+{
+  "name": "saavii",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "workers/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check:boundaries": "depcruise apps packages workers --config .dependency-cruiser.cjs",
+    "test": "vitest run --passWithNoTests",
+    "check": "npm run typecheck && npm run check:boundaries && npm test"
+  },
+  "devDependencies": {
+    "dependency-cruiser": "^16.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^3.0.0"
+  }
+}

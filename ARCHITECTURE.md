@@ -139,7 +139,7 @@ Every interaction surface shares this one backend path — deterministic systems
 
 ### Enforcement
 
-Documentation is the spec, not the enforcement. When implementation begins, the §4 and §6 rules must be encoded as **automated architecture checks** run in CI — forbidden-import / dependency rules (e.g. ESLint `no-restricted-imports` or dependency-cruiser) that fail the build on: a pure engine importing anything with I/O, any package other than `store` importing Prisma or a Supabase data client, any package other than its owner importing a provider SDK (model, push, auth, Canvas/Google), and any cross-package import not permitted by the §6 matrix. The first change that adds package manifests must add these checks in the same change — the boundaries should never be enforceable-but-unenforced. Tool choice is recorded in `docs/decisions/` when made.
+Documentation is the spec, not the enforcement. The §4 and §6 rules are encoded as **automated architecture checks** run in CI: `.dependency-cruiser.cjs` (decision 0005) fails the build on a pure engine importing anything with I/O, any package other than `store` importing Prisma or a Supabase data client, any package other than its owner importing a provider SDK (model, push, auth, Canvas/Google), and any cross-package import not permitted by the §6 matrix. `.github/workflows/ci.yml` runs typecheck → boundary checks → tests on every push to `main` and every PR. A rule that blocks a legitimate change is a spec conflict — surface it, don't weaken it.
 
 ## 7. Recorded stack decisions
 
@@ -147,6 +147,8 @@ These are settled. Do not re-litigate them. Decisions the handbook leaves open m
 
 - **Client:** React Native with Expo (TypeScript). Mobile is the primary MVP surface. *(Volume IV)*
 - **API:** a **dedicated Node.js service** (not Next.js API routes). *(Volume IV allows either; decision record: `docs/decisions/0001-dedicated-node-api.md`.)*
+- **API framework:** Fastify. *(Decision record: `docs/decisions/0004-fastify-api-framework.md`.)*
+- **Boundary enforcement + tests:** dependency-cruiser encodes §6; Vitest runs tests; strict shared TypeScript config; all three run in CI. *(Decision record: `docs/decisions/0005-bootstrap-toolchain.md`.)*
 - **Database:** PostgreSQL on Supabase, accessed exclusively through `packages/store` via **Prisma**. The Prisma schema lives in `packages/store` — deliberate boundary enforcement, not the conventional root location.
 - **Auth:** Supabase Auth, owned by `packages/trust` (client wiring, session/token verification, RLS policy). `apps/api` consumes auth middleware from `trust`.
 - **No `packages/supabase`:** Supabase is split by responsibility (Postgres → `store`, Auth → `trust`), never by vendor. *(Decision record: `docs/decisions/0003-supabase-split.md`.)*
@@ -173,7 +175,7 @@ Marked in the owning folder's README as well. Do not invent answers — extend t
 
 | # | Question | Owning doc |
 |---|---|---|
-| 1 | Node.js HTTP framework for `apps/api` (Express, Fastify, …) — handbook silent. | `apps/api/README.md` |
+| 1 | ~~Node.js HTTP framework for `apps/api`~~ **Resolved:** Fastify (`docs/decisions/0004-fastify-api-framework.md`). | `apps/api/README.md` |
 | 2 | Canvas poll frequency — handbook says "frequently enough to feel event-driven while respecting rate limits", no number. | `packages/signals/README.md` |
 | 3 | Do memory node/edge tables live in the same Prisma schema as operational tables, or a separate one? | `packages/store/README.md` |
 | 4 | Priority formula weights — factors are listed, the formula is not. | `packages/priority/README.md` |

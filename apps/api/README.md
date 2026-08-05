@@ -25,5 +25,5 @@ Future coordination domains (Volume IV, V2 — deliberately not scaffolded): `/s
 - Do: apply `trust` middleware globally; no unauthenticated domain routes.
 - Don't: import Prisma, provider SDKs, or a push SDK here — those imports are the smell of a boundary violation.
 
-**OPEN QUESTIONS** (also in `ARCHITECTURE.md` §9)
-- HTTP framework (Express, Fastify, …) — the handbook is silent; pick when implementation starts and record in `ARCHITECTURE.md` §7.
+**Resolved decisions**
+- HTTP framework: **Fastify** (`docs/decisions/0004-fastify-api-framework.md`). Route modules register as Fastify plugins; `trust` middleware applies as a global hook; request/response schemas reference `contracts` types.
