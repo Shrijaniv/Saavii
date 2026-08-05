@@ -20,8 +20,19 @@ Future coordination domains (Volume IV, V2 — deliberately not scaffolded): `/s
 - `/capacity` serves the "Can I?" hero feature: feasible windows + tradeoffs + safest recommendation, with reasoning shown (Volume I, Ch. 8; Volume II).
 - `/memories` exposes view/edit/export/delete per the privacy commitments (Volume I, Ch. 10).
 
+**Layout**
+- `src/main.ts` — the composition root: reads config, wires the real `Store` and session verifier, listens, shuts down cleanly. It imports neither Prisma nor Supabase directly (`store` and `trust` own those).
+- `src/server.ts` — `buildServer(deps)`: auth hook, error translation, route registration. Dependencies are injected so tests run against fakes.
+- `src/config.ts` — pure environment validation; missing variables fail startup by name.
+- `src/routes/` — one module per Volume IV domain.
+
+Run it locally with `npm run dev --workspace @saavii/api` (needs `.env`; see `.env.example`).
+
+**Sub-resources.** The Volume IV domain list is fixed, so anything it does not name lives under the domain it belongs to rather than in an invented one. Routines and consent are Profile sections in Volume III, so they are `/profile/routines` and `/profile/consent` — not new top-level domains.
+
 **For implementing agents**
 - Do: keep one route module per domain, named exactly as listed.
+- Do: take identity from the verified session (`request.authenticatedUser`), never from the request body — there is a test asserting exactly this.
 - Do: apply `trust` middleware globally; no unauthenticated domain routes.
 - Don't: import Prisma, provider SDKs, or a push SDK here — those imports are the smell of a boundary violation.
 

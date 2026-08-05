@@ -3,7 +3,19 @@
 > **Saavii is an AI Life Operating System that helps students and professionals make better decisions every day by understanding their commitments, priorities, relationships, and goals — so they can live happier, more balanced lives.**
 > — [Handbook, Volume I, Chapter 3](./docs/handbook/README.md)
 
-This repository is currently a **documented scaffold**: the directory structure, the architectural contract, and the rules implementing agents must follow. There is no implementation code yet. The map and the rulebook come first; the product is built against them.
+The map and the rulebook come first — [`CLAUDE.md`](./CLAUDE.md) and [`ARCHITECTURE.md`](./ARCHITECTURE.md) are the contract every change is built against, and the architecture boundaries they describe are enforced in CI, not by review alone.
+
+**Status:** Phase 1 (Foundation) is under way — the Phase 1 Prisma schema, the Trust Layer's consent and redaction logic, and the Fastify API for profile, goals, classes, interests, routines, and consent. Phases follow Volume V of the handbook.
+
+## Development
+
+```bash
+npm install
+npm run db:generate     # generate the Prisma client (needed before typecheck)
+npm run check           # typecheck + architecture boundaries + tests
+```
+
+Copy `.env.example` to `.env` for local values. A real database is needed only to run migrations or the server — the checks run without one.
 
 ## Where the canonical thesis lives
 

@@ -1,13 +1,21 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@saavii/contracts": ["packages/contracts/src/index.ts"],
+      "@saavii/store": ["packages/store/src/index.ts"],
+      "@saavii/trust": ["packages/trust/src/index.ts"]
+    }
   },
   "include": [
     "apps/**/*.ts",
     "apps/**/*.tsx",
     "packages/**/*.ts",
-    "workers/**/*.ts"
+    "workers/**/*.ts",
+    "*.ts"
   ],
   "exclude": ["node_modules"]
 }

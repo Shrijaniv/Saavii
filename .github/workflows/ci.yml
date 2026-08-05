@@ -17,6 +17,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Generate Prisma client
+        # `generate` reads the schema only — it never connects — so a placeholder
+        # URL is enough and no database secret is needed to run the checks.
+        run: npm run db:generate
+        env:
+          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
       - name: Typecheck
         run: npm run typecheck
       - name: Architecture boundaries (ARCHITECTURE.md §6)

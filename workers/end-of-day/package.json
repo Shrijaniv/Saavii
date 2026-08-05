@@ -1,5 +1,7 @@
 {
   "name": "@saavii/worker-end-of-day",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" }
 }

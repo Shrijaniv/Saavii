@@ -14,6 +14,8 @@
 - Reasoning proposal types are the *only* channel by which LLM output reaches the rest of the system (`CLAUDE.md` constraint 3).
 - **Action Protocol proposals use a versioned schema** (Volume II & IV "Action Protocol"; `ARCHITECTURE.md` §5). Every proposal carries: action type (e.g. `CREATE_BLOCK`, `MOVE_BLOCK`, `COMPLETE_BLOCK`, `UPDATE_PRIORITY_OVERRIDE`, `CREATE_MEMORY`, `LINK_ENTITIES`), parameters, source modality, original request, confidence, referenced entities, context identifiers, and schema version. Constraint strength (hard vs flexible) is part of the parameter vocabulary so "at 3 PM" and "around 3 PM" are distinguishable downstream.
 
+**Runtime validation lives in orchestrators, not here.** This package may not depend on anything, including a validation library (`ARCHITECTURE.md` §6), so it carries *types* — including the Action Protocol's `schemaVersion` — while the checking of untrusted input happens where it is received: request schemas in `apps/api`, the validation gate in `workers/memory`. That keeps the zero-dependency rule intact and puts validation at the trust boundary where it belongs.
+
 **For implementing agents**
 - Do: treat changes here as breaking for everyone — check each consumer's README before altering a shape.
 - Do: keep event/entity/proposal families in separate modules (`events.ts`, `entities.ts`, `proposals.ts`).

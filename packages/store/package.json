@@ -1,5 +1,16 @@
 {
   "name": "@saavii/store",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "generate": "prisma generate --schema schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.1.0"
+  }
 }

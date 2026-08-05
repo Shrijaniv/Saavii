@@ -1,9 +1,197 @@
 // Module: store/schema.prisma
 // Responsibility: The PostgreSQL schema (Supabase) — the ONLY schema location in the repo.
-// Covers the Volume IV Operational Store data set: users/profiles, integrations, classes,
-// tasks, external events, plans + schedule blocks, execution records, conflicts,
-// notifications, daily/capacity snapshots, insights — plus memory node/edge tables
-// (reached only through packages/memory).
 //
-// PLACEHOLDER — no models yet. Read packages/store/README.md and /ARCHITECTURE.md first.
+// Phase 1 scope (Volume V): profiles, goals, classes, routines, interests, and the
+// privacy/consent foundations. Later phases add integrations and external events
+// (Phase 2), tasks, plans and schedule blocks (Phase 3), execution records and
+// conflicts (Phase 4), notifications, snapshots and insights (Phase 5), and the
+// memory node/edge tables (Phase 6). Do not add them before their phase.
+//
 // OPEN QUESTION (#3, ARCHITECTURE.md §9): memory tables in this schema or a separate one?
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum GoalHorizon {
+  SHORT_TERM
+  SEMESTER
+  LONG_TERM
+}
+
+enum GoalStatus {
+  ACTIVE
+  ACHIEVED
+  PAUSED
+  ABANDONED
+}
+
+enum RoutineKind {
+  SLEEP
+  GETTING_READY
+  MEAL
+  COMMUTE
+  OTHER
+}
+
+enum FrequencyUnit {
+  WEEK
+  MONTH
+}
+
+enum ConsentCategory {
+  LOCATION
+  RELATIONSHIP_MEMORY
+  BEHAVIORAL_LEARNING
+  EMAIL_CONTENT
+  HEALTH
+}
+
+enum ConsentDecision {
+  GRANTED
+  DENIED
+  REVOKED
+}
+
+/// The user's profile. `id` matches the Supabase Auth user id; authentication
+/// itself is owned by packages/trust (decision 0003).
+model UserProfile {
+  id          String   @id
+  email       String   @unique
+  displayName String?
+  university  String?
+  /// IANA timezone, e.g. "America/Chicago".
+  timezone    String   @default("UTC")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  goals    Goal[]
+  classes  CourseClass[]
+  routines Routine[]
+  interests Interest[]
+  consentGrants ConsentGrant[]
+
+  @@map("user_profiles")
+}
+
+model Goal {
+  id          String      @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  horizon     GoalHorizon
+  status      GoalStatus  @default(ACTIVE)
+  targetDate  DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("goals")
+}
+
+model CourseClass {
+  id         String   @id @default(uuid())
+  userId     String
+  courseCode String
+  title      String
+  term       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     UserProfile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meetings ClassMeeting[]
+
+  @@unique([userId, courseCode, term])
+  @@index([userId])
+  @@map("course_classes")
+}
+
+/// One weekly meeting of a class. Times are minutes from midnight in the user's
+/// local timezone: weekly commitments recur in wall-clock time, so an absolute
+/// instant would drift across DST.
+model ClassMeeting {
+  id          String  @id @default(uuid())
+  courseId    String
+  weekday     Weekday
+  startMinute Int
+  endMinute   Int
+  location    String?
+
+  course CourseClass @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@map("class_meetings")
+}
+
+/// Sleep, getting ready, meals, commute — the fixed scaffolding the planner
+/// schedules around (Volume II, "Daily and weekly planning").
+model Routine {
+  id              String      @id @default(uuid())
+  userId          String
+  kind            RoutineKind
+  label           String
+  weekdays        Weekday[]
+  startMinute     Int
+  durationMinutes Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("routines")
+}
+
+/// Hobbies and interests with a desired frequency — protected personal time is
+/// a commitment, not leftover time (Volume I, Ch. 4, Principle 2).
+model Interest {
+  id                     String        @id @default(uuid())
+  userId                 String
+  name                   String
+  desiredTimesPerUnit    Int
+  frequencyUnit          FrequencyUnit @default(WEEK)
+  typicalDurationMinutes Int?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("interests")
+}
+
+/// Opt-in record for a sensitive data category (Volume I, Ch. 10). Rows are
+/// append-only history: a revocation is a new row, so the audit trail survives.
+model ConsentGrant {
+  id        String          @id @default(uuid())
+  userId    String
+  category  ConsentCategory
+  decision  ConsentDecision
+  /// Where the decision came from, for the audit trail.
+  source    String
+  decidedAt DateTime        @default(now())
+  revokedAt DateTime?
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, category, decidedAt])
+  @@map("consent_grants")
+}
