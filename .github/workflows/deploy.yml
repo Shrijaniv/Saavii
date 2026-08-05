@@ -1,0 +1,51 @@
+name: Deploy
+
+# CD pipeline: runs on every push to main. Always re-runs the full Checks
+# workflow first; deploy jobs run only after checks pass, only when deploys
+# are enabled (repository variable DEPLOY_ENABLED == 'true'), and only under
+# the 'production' GitHub environment, where required reviewers can be added.
+#
+# The deploy steps are deliberate fail-safes until a hosting target is chosen
+# (ARCHITECTURE.md §9, open question #10) — enabling the gate without
+# configuring a target fails loudly instead of pretending to ship.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  deploy-backend:
+    name: Deploy api + workers (production)
+    needs: checks
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          echo "::error::No backend deploy target configured (ARCHITECTURE.md §9, open question #10)."
+          echo "Choose hosting for apps/api and workers, record it in docs/decisions/, replace this step, and keep the DEPLOY_ENABLED + environment gates."
+          exit 1
+
+  deploy-mobile:
+    name: Build mobile (production)
+    needs: checks
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          echo "::error::No mobile build pipeline configured (ARCHITECTURE.md §9, open question #10 — likely Expo EAS)."
+          echo "Configure EAS, record it in docs/decisions/, and replace this step."
+          exit 1

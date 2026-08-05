@@ -1,9 +1,11 @@
-name: CI
+name: Checks
+
+# The quality gate: every PR runs these, and the Deploy pipeline re-runs them
+# on main before anything ships (workflow_call). See .github/workflows/README.md.
 
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_call:
 
 jobs:
   check:

@@ -149,6 +149,7 @@ These are settled. Do not re-litigate them. Decisions the handbook leaves open m
 - **API:** a **dedicated Node.js service** (not Next.js API routes). *(Volume IV allows either; decision record: `docs/decisions/0001-dedicated-node-api.md`.)*
 - **API framework:** Fastify. *(Decision record: `docs/decisions/0004-fastify-api-framework.md`.)*
 - **Boundary enforcement + tests:** dependency-cruiser encodes §6; Vitest runs tests; strict shared TypeScript config; all three run in CI. *(Decision record: `docs/decisions/0005-bootstrap-toolchain.md`.)*
+- **Delivery pipeline:** production is reachable only through PR checks → merge to `main` → checks re-run → gated deploy (`DEPLOY_ENABLED` variable + `production` environment). Deploy steps fail loudly until hosting is chosen. *(Decision record: `docs/decisions/0006-delivery-pipeline.md`.)*
 - **Database:** PostgreSQL on Supabase, accessed exclusively through `packages/store` via **Prisma**. The Prisma schema lives in `packages/store` — deliberate boundary enforcement, not the conventional root location.
 - **Auth:** Supabase Auth, owned by `packages/trust` (client wiring, session/token verification, RLS policy). `apps/api` consumes auth middleware from `trust`.
 - **No `packages/supabase`:** Supabase is split by responsibility (Postgres → `store`, Auth → `trust`), never by vendor. *(Decision record: `docs/decisions/0003-supabase-split.md`.)*
@@ -184,3 +185,4 @@ Marked in the owning folder's README as well. Do not invent answers — extend t
 | 7 | Push delivery provider: Firebase Cloud Messaging vs Expo Notifications — Volume IV allows either. | `packages/notifications/README.md` |
 | 8 | Model routing thresholds and specific model IDs. | `packages/reasoning/README.md` |
 | 9 | Default quiet hours. | `packages/notifications/README.md` |
+| 10 | Hosting targets: where `apps/api` + `workers/` deploy, and the mobile build pipeline (likely Expo EAS) — handbook names cost line items, not providers. Each choice becomes a decision record and replaces its placeholder step in `deploy.yml`. | `.github/workflows/README.md` |

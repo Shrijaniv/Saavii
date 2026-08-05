@@ -17,3 +17,4 @@ Records for choices the handbook (`docs/handbook/`) deliberately leaves open. Wh
 | [0003](./0003-supabase-split.md) | Supabase split by responsibility: Postgres → `store`, Auth → `trust` | Accepted |
 | [0004](./0004-fastify-api-framework.md) | Fastify as the HTTP framework for `apps/api` | Accepted |
 | [0005](./0005-bootstrap-toolchain.md) | Bootstrap toolchain: dependency-cruiser, Vitest, strict TypeScript, CI | Accepted |
+| [0006](./0006-delivery-pipeline.md) | Delivery pipeline: checks gate every path to production | Accepted |
