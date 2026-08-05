@@ -69,6 +69,7 @@ Core prompts:
 - Am I on track?
 - Why is this my priority?
 - Can I hang out with Shloka this week?
+- When can Shloka and I study together?
 - Move this to tomorrow.
 - Remember that Shloka is my best friend.
 - Forget that location.
@@ -113,6 +114,8 @@ A control panel for the user's life model. Sections:
 
 **Capacity question** — Understand requested activity and duration → retrieve workload and fixed commitments → preserve buffers and protected activities → return ranked available windows → explain safest option → optionally create calendar block.
 
+**Shared coordination** — Identify participants and requested activity → verify each participant's sharing grant → derive privacy-safe availability windows from each canonical plan → intersect feasible windows → account for duration, location, travel, deadlines, energy preferences, and protected time → rank options → explain tradeoffs without revealing private details → collect participant approval → create a shared plan block and replan each participant independently if needed.
+
 **Conflict resolution** — Show the conflicting signals, explain consequences, recommend an option, and let the user accept, override, or defer.
 
 **Memory update** — Conversation produces a memory proposal → validate confidence and sensitivity → store directly when explicit and low-risk or ask for confirmation when ambiguous → make it visible in Memory Review.
@@ -150,3 +153,30 @@ Saavii should have its own application as the visual home for planning, progress
 - Action-button shortcut where supported
 
 The product should feel present throughout the day without attempting to replace the operating system's native assistant.
+
+## Future shared-planning experience
+
+Shared planning should feel like asking Saavii to coordinate, not like opening another scheduling poll.
+
+### Entry points
+
+- Chat or voice request
+- Share-plan action from Calendar
+- Invite from a person or group
+- Temporary coordination link for a non-Saavii participant
+
+### Candidate-time card
+
+Each suggested option should show:
+
+- Date, time, duration, and location
+- Participant availability status
+- A concise reason it is recommended
+- Tradeoffs, if any
+- Actions to propose, approve, decline, or suggest another time
+
+### Privacy UX
+
+Before sharing, Saavii must clearly show what the other participant can learn. The default is free/busy availability only. Private event names, tasks, goals, memories, and reasons for unavailability remain hidden.
+
+The product language should say "unavailable" rather than exposing why someone is unavailable. Participants can grant more detail for a specific coordination request, but never through an implied or bundled permission.

@@ -55,6 +55,7 @@ A college student who uses Canvas, Gmail, and Google Calendar and balances class
 - **Completion feedback** — As a student, I want to check off planned blocks so Saavii learns what I actually completed.
 - **Missed work** — As a student, I want unfinished work automatically reorganized without shame or manual calendar repair.
 - **Social capacity** — As a student, I want Saavii to recommend when I can meet a friend without risking my deadlines.
+- **Shared coordination** — As a user, I want to selectively compare my availability with another person's Saavii plan so we can find mutually feasible times to study, meet, exercise, travel, or work together without exposing our private schedules.
 - **Personal balance** — As a user, I want hobbies, exercise, relationships, and rest treated as valuable commitments rather than leftover time.
 - **Memory control** — As a user, I want to see and remove what Saavii remembers about me.
 
@@ -84,9 +85,84 @@ A college student who uses Canvas, Gmail, and Google Calendar and balances class
 - Lifestyle and campus recommendations
 - Events, clubs, concerts, movies, books, restaurants
 - Relationship-aware reminders
+- Privacy-preserving shared planning and coordination
 - Professional mode
 - Health and wearable signals
 
 ### Long term
 
 A cross-stage Life Operating System that evolves from student to professional, founder, parent, and beyond.
+
+## Future capability — Shared Planning and Coordination
+
+Shared planning allows two or more people to coordinate outcomes without exposing their full lives.
+
+Examples:
+
+- When can Shloka and I study together for two hours?
+- When can my roommate and I go grocery shopping?
+- Which evening works for our project group?
+- Can my partner and I take a weekend trip without either of us missing important work?
+
+Saavii compares only the availability and constraints each participant has explicitly permitted it to use. It returns ranked mutual windows, tradeoffs, and a recommended option. It may then create a proposed shared block for all participants to approve.
+
+### Privacy requirements
+
+Users control what is shared:
+
+- Free/busy only
+- Selected categories
+- Exact details for specific events
+- One-time availability
+- Ongoing trusted access
+
+Sensitive details such as assignment names, medical appointments, private goals, emails, memories, or relationship context are never revealed by default.
+
+### Product rule
+
+> Coordinate outcomes without exposing lives.
+
+### Scope boundary
+
+This is not an MVP feature. Individual planning, execution reconciliation, capacity accuracy, consent controls, and memory review must be reliable before Saavii coordinates across multiple users.
+
+## Action Protocol
+
+Saavii uses a single structured Action Protocol for all user-initiated changes, regardless of whether the request comes from voice, chat, a button, a widget, a notification action, or a future automation.
+
+The Reasoning Engine interprets natural language and produces an action proposal. It does not directly change durable state.
+
+Examples of actions: `CREATE_BLOCK`, `MOVE_BLOCK`, `RESIZE_BLOCK`, `DELETE_BLOCK`, `COMPLETE_BLOCK`, `UPDATE_TASK_ESTIMATE`, `UPDATE_PRIORITY_OVERRIDE`, `CREATE_REMINDER`, `CREATE_RECURRING_ROUTINE`, `CREATE_MEMORY`, `UPDATE_MEMORY`, `DELETE_MEMORY`, `LINK_ENTITIES`, `UNLINK_ENTITIES`.
+
+### Example
+
+User says: "Add an hour break around 3 PM." The Reasoning Engine proposes:
+
+```json
+{
+  "action": "CREATE_BLOCK",
+  "blockType": "BREAK",
+  "durationMinutes": 60,
+  "preferredStart": "15:00",
+  "flexibilityMinutes": 30,
+  "constraintStrength": "PREFERRED"
+}
+```
+
+The Planning Engine determines whether and where the block is feasible. An orchestrator validates permissions, requests approval when required, persists the accepted plan change, and mirrors it to connected calendars.
+
+### Requirements
+
+- Every action proposal must use a versioned schema.
+- Every proposal must include source, confidence, and the original user request.
+- Ambiguous references such as "this time" must be resolved using current screen, selected object, conversation, and timezone context.
+- When required information cannot be inferred safely, Saavii asks a concise clarification.
+- Exact requests are treated as hard constraints unless impossible.
+- Approximate requests such as "around," "sometime," or "after" become flexible constraints.
+- A proposed action never mutates durable state until validated.
+- Low-risk actions may be applied automatically with immediate visibility.
+- Actions that materially move, remove, or endanger existing commitments require approval or advance notice.
+
+### User story
+
+As a user, I want to speak naturally when changing my plan so I do not need to manually configure scheduling rules, while still receiving predictable and explainable results.

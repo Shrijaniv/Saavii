@@ -11,9 +11,12 @@
 **Route domains (Volume IV, one module per domain):**
 `/profile` · `/goals` · `/classes` · `/interests` · `/integrations` · `/sync` · `/tasks` · `/plans` · `/execution` · `/capacity` · `/conflicts` · `/memories` · `/briefings` · `/notifications` · `/chat`
 
+Future coordination domains (Volume IV, V2 — deliberately not scaffolded): `/sharing-policies`, `/availability-grants`, `/coordination-requests`, `/coordination-candidates`, `/shared-plans`.
+
 **Rules it must honor**
 - Routes are **thin**: validate → authorize (middleware from `trust`) → orchestrate packages → respond. If a handler contains a scheduling loop or a priority formula, it's in the wrong layer.
 - `/chat` is the main consumer of `reasoning` — and the place where proposals get validated and executed by deterministic services, never auto-applied (`CLAUDE.md` constraint 3).
+- **All user-initiated changes use the Action Protocol** (`ARCHITECTURE.md` §5), whatever the surface: voice, chat, buttons, widgets, notification actions. Route handlers for direct UI actions (e.g. a "move block" button) construct the same versioned proposals and run the same validation path as `/chat` — no surface-specific shortcut writes.
 - `/capacity` serves the "Can I?" hero feature: feasible windows + tradeoffs + safest recommendation, with reasoning shown (Volume I, Ch. 8; Volume II).
 - `/memories` exposes view/edit/export/delete per the privacy commitments (Volume I, Ch. 10).
 

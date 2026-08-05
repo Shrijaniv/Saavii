@@ -41,4 +41,4 @@ The full data flow, the communication matrix, and the "three kinds of code" rule
 ## Deliberately deferred
 
 - **`apps/web`** — Volume IV allows a Next.js dashboard but names mobile as the primary MVP surface. Not scaffolded; add only when the roadmap calls for it.
-- **Multiplayer / coordination features** — Volume I, Chapter 11, Pillar 4: not built in the MVP, but the data model must not foreclose it.
+- **Multiplayer / shared planning** — Volume I, Chapter 11, Pillar 4. Now specified in detail as the future Coordination Engine (Volume IV) with UX (Volume III) and release criteria (Volume V), governed by *"coordinate outcomes without exposing lives."* Still not built in the MVP, but the data model must not foreclose it.

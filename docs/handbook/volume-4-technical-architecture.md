@@ -93,6 +93,8 @@ It supports point-in-time and range queries such as "Can I do this this week?"
 
 A deterministic constraint-based scheduler.
 
+The Planning Engine remains single-user and owns only one person's canonical plan. Shared coordination must not give one user's planner direct access to another user's private life state.
+
 Inputs: hard constraints, task effort and deadlines, priorities, user preferences, capacity, execution history, protected personal activities.
 
 Outputs: daily plans, weekly allocations, schedule blocks, confidence and warnings.
@@ -125,6 +127,8 @@ Routes proactive outputs according to urgency, quiet hours, user preferences, ba
 
 Cross-cutting controls for authentication, authorization, token security, encryption, consent, audit logs, data retention, export, and deletion.
 
+For shared planning, the Trust Layer also owns availability grants, participant consent, revocation, disclosure policy, and auditability. A coordination request may consume only the minimum privacy-safe projection each participant has authorized.
+
 ## Reference technology stack
 
 ### Client
@@ -155,6 +159,39 @@ Use direct production APIs for OAuth, synchronization, batching, and reliability
 
 Student accounts may not have access to institution-level Live Events. MVP uses incremental polling with change detection. Poll frequently enough to feel event-driven while respecting rate limits. If a deployment supports webhooks or Live Events, consume them as an optimization.
 
+### Future Coordination Engine
+
+A future Coordination Engine compares privacy-safe availability projections from multiple users and proposes shared time blocks. It does not read another user's raw plan, tasks, memories, or calendar details.
+
+Inputs:
+
+- Participant IDs
+- Requested activity, duration, time range, and location constraints
+- Per-participant availability projections
+- Sharing policies and one-time grants
+- Travel and buffer assumptions
+
+Outputs:
+
+- Ranked coordination candidates
+- Participant-specific tradeoffs
+- Explanation safe for all recipients
+- Proposed shared plan block
+
+The engine is deterministic. It creates proposals only; each participant's orchestrator validates consent and independently applies approved changes to that participant's canonical plan.
+
+Future coordination entities: `CoordinationRequest`, `CoordinationParticipant`, `AvailabilityGrant`, `SharingPolicy`, `AvailabilityProjection`, `CoordinationCandidate`, `SharedPlan`, `ParticipantResponse`.
+
+Privacy boundary:
+
+```
+User A canonical plan → privacy projection ─┐
+                                            ├→ Coordination Engine → shared candidates
+User B canonical plan → privacy projection ─┘
+```
+
+The Coordination Engine receives availability intervals and permitted constraints, not the underlying reasons. The governing rule is: **coordinate outcomes without exposing lives.**
+
 ## Background workflows
 
 - **Sync worker** — Incrementally fetches changes and emits normalized domain events.
@@ -181,6 +218,14 @@ Student accounts may not have access to institution-level Live Events. MVP uses 
 - `/notifications`
 - `/chat`
 
+Future coordination API domains:
+
+- `/sharing-policies`
+- `/availability-grants`
+- `/coordination-requests`
+- `/coordination-candidates`
+- `/shared-plans`
+
 ## Security requirements
 
 - OAuth tokens encrypted and isolated from application logs.
@@ -191,9 +236,48 @@ Student accounts may not have access to institution-level Live Events. MVP uses 
 - User-level data deletion workflows.
 - Memory provenance and audit trails.
 - Explicit opt-in for location and sensitive memory categories.
+- Free/busy-only sharing by default for coordination.
+- Per-person and per-request sharing scopes with revocation.
+- No cross-user raw-plan, task, email, memory, or private-event access.
+- Auditable participant approval before a shared block becomes canonical for any user.
 
 ## Cost strategy
 
 Keep the LLM out of frequent deterministic loops. Cache normalized signals and derived context. Use smaller models for classification and extraction, reserving larger models for complex synthesis.
 
 Expected early fixed infrastructure is modest; variable cost is primarily model usage, email/calendar sync volume, maps requests, and notifications. A detailed financial model should be updated after measuring real context sizes and interaction frequency.
+
+## Action Protocol
+
+The Action Protocol is the formal contract between the Reasoning Engine and deterministic services.
+
+```
+Voice / Chat / UI / Widget / Automation
+                ↓
+        Reasoning Engine
+                ↓
+      Structured Action Proposal
+                ↓
+     Validation & Orchestration
+                ↓
+        Planning / Memory
+                ↓
+        Execution Engine
+                ↓
+      Persistence & Integrations
+```
+
+The LLM never writes directly to databases or external integrations. It produces structured proposals only.
+
+Every proposal contains:
+
+- Action type
+- Parameters
+- Source modality
+- Original request
+- Confidence
+- Referenced entities
+- Context identifiers
+- Schema version
+
+This protocol allows every interaction surface to share the same backend behavior while keeping deterministic systems independent of natural language.

@@ -45,6 +45,8 @@ Surfaces and orchestration:
 | `apps/api` | Dedicated Node.js service exposing the Volume IV API domains. Thin routes; delegates to packages. |
 | `workers/` | The five Inngest workflows (sync, planning, end-of-day, insight, memory). Orchestration only. |
 
+Deliberately not scaffolded: the future **Coordination Engine** (Volume IV) for privacy-preserving shared planning. It is specified — deterministic, proposal-only, consuming privacy-safe availability projections rather than raw plans, with the Planning Engine remaining strictly single-user — but it is V2 (Volume V release criteria). The data model must not foreclose it (Volume I, Ch. 11, Pillar 4).
+
 ## 4. Three kinds of code
 
 Every module in this repo is exactly one of these. Do not mix them.
@@ -98,6 +100,21 @@ Memory and reasoning run alongside:
                                                   with provenance on every node/edge)
 ```
 
+### The Action Protocol
+
+All user-initiated changes — voice, chat, buttons, widgets, notification actions, future automations — travel through **one structured Action Protocol** (Volume II "Action Protocol"; Volume IV "Action Protocol"). The Reasoning Engine emits a structured action proposal (action types like `CREATE_BLOCK`, `MOVE_BLOCK`, `COMPLETE_BLOCK`, `UPDATE_PRIORITY_OVERRIDE`, `CREATE_MEMORY`, `LINK_ENTITIES`, …); an orchestrator validates permissions via `trust`, requests approval when required, invokes the deterministic engines, persists the accepted change via `store`, and mirrors it outward via `signals`.
+
+Every proposal uses a **versioned schema** (defined in `packages/contracts`) and carries: action type, parameters, source modality, original request, confidence, referenced entities, and context identifiers.
+
+Protocol rules (Volume II, binding on implementations):
+
+- A proposed action **never mutates durable state until validated** — this is constraint 3 of `CLAUDE.md` made concrete.
+- Exact requests are hard constraints unless impossible; approximate requests ("around", "sometime", "after") become flexible constraints.
+- Ambiguous references ("this time") resolve from current screen, selected object, conversation, and timezone context; when inference is unsafe, ask a concise clarification instead of guessing.
+- Low-risk actions may auto-apply with immediate visibility; actions that materially move, remove, or endanger existing commitments require approval or advance notice.
+
+Every interaction surface shares this one backend path — deterministic systems stay independent of natural language.
+
 ## 6. Communication matrix
 
 "May call" means a direct code dependency. Everything may use `contracts` (types); that row is omitted from "may call" for brevity. `trust` is called only by **orchestrators and boundary systems** — pure engines never call it; their callers pass in already-authorized, consent-filtered inputs.
@@ -148,6 +165,7 @@ These are settled. Do not re-litigate them. Decisions the handbook leaves open m
 - Structured redaction before model calls where possible.
 - Extract structured events from Gmail and **discard message bodies**.
 - User-level deletion and export workflows; memory provenance and audit trails.
+- *(Future, coordination)* Free/busy-only sharing by default; per-person and per-request sharing scopes with revocation; no cross-user raw-plan, task, email, memory, or private-event access; auditable participant approval before a shared block becomes canonical for any user.
 
 ## 9. Open questions (master list)
 

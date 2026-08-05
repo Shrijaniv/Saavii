@@ -8,6 +8,8 @@
 
 **Rules it must honor**
 - **The plan it produces is the system of record** once persisted (`CLAUDE.md` constraint 1). Nothing in this package may treat external calendar state as truth.
+- **Single-user by contract** (Volume IV, Planning Engine): this engine owns exactly one person's canonical plan. Future shared coordination happens in a separate Coordination Engine over privacy-safe availability projections — it must never give one user's planner direct access to another user's private life state.
+- Action Protocol block proposals (e.g. `CREATE_BLOCK` with `constraintStrength`) are inputs like any other constraint: exact requests are hard constraints unless impossible; flexible ones get placed where feasible (Volume II, Action Protocol example).
 - Large tasks are **split into bounded work units**; the planner **reserves buffers** and avoids unrealistic back-to-back locations (Volume IV).
 - **Plans are hypotheses; reality is truth** (Volume I, Ch. 4, Principle 3): replanning after reconciliation is normal operation, not an error path.
 - Low-risk adjustments may be automatic **with clear notification**; significant changes require approval or advance notice (Volume II) — the plan output must therefore classify its own changes by impact.

@@ -12,6 +12,7 @@
 - Consent registry: explicit **opt-in for location and sensitive memory categories** (Volume IV; Volume I, Ch. 10).
 - Audit trails for important automated actions (Volume I, Ch. 10 "maintain auditability").
 - User-level **export and deletion** workflows (Volume I, Ch. 10: complete account deletion, memory export).
+- *(Future, V2 — shared planning)* Availability grants, participant consent, revocation, disclosure policy, and coordination auditability (Volume IV, Trust Layer). A coordination request may consume only the minimum privacy-safe projection each participant has authorized; free/busy-only is the default. Not built in the MVP, but consent primitives here must not foreclose it.
 
 **Rules it must honor**
 - Least-privilege scopes for every integration (Volume IV; Volume I, Ch. 10 "request the minimum permissions required").

@@ -57,6 +57,8 @@ Do not lead with integrations or AI. Lead with:
 
 A useful first plan → daily briefing habit → visible reduction in stress → weekly reflection → recommendation to a friend.
 
+A later multiplayer loop can deepen this: a user asks Saavii to coordinate with a friend, roommate, partner, or study group → the other participant receives a privacy-safe invitation → both experience a useful shared plan → additional relationships adopt Saavii.
+
 ## MVP release criteria
 
 The MVP is ready for a closed beta when a student can:
@@ -152,12 +154,14 @@ The three wedge elements from Volume I, Chapter 8 map to phases as follows: **in
 - Campus events and clubs
 - Restaurants, movies, concerts, and books
 - Richer relationship intelligence
+- Privacy-preserving shared planning for study sessions, meetings, workouts, errands, and small groups
 - Professional mode
 
 ### V3
 
 - Health and wearable context
 - Broader family and household planning
+- Recurring group and household coordination
 - Travel-aware life planning
 - Multi-device ambient experience
 
@@ -170,6 +174,8 @@ The three wedge elements from Volume I, Chapter 8 map to phases as follows: **in
 **Notification fatigue** — Mitigation: strict interruption criteria, batching, quiet hours, category controls.
 
 **Privacy concerns** — Mitigation: minimal scopes, visible memory controls, clear promises, deletion, security audits.
+
+Shared planning adds cross-user disclosure risk. Mitigation: free/busy-only defaults, explicit per-person and per-request grants, revocation, privacy-safe availability projections, participant approval, and audit logs. The Coordination Engine must never receive raw reasons for unavailability unless a user explicitly shares them.
 
 **Integration fragility** — Mitigation: normalized adapters, idempotent sync, retries, monitoring, graceful degraded states.
 
@@ -192,6 +198,19 @@ Before public launch, instrument cost per:
 - Weekly review
 
 A $5 student plan is viable only when gross margin remains healthy under realistic daily usage. Model routing and context compression are therefore product requirements, not later optimizations.
+
+## Future shared-planning release criteria
+
+Shared planning should not enter beta until:
+
+1. Individual plans and capacity estimates are reliable
+2. Each participant has a canonical Saavii plan
+3. Free/busy projections can be generated without exposing private event details
+4. Sharing grants are explicit, scoped, revocable, and auditable
+5. All participants approve a shared block before it changes their plans
+6. Declining a proposal has no negative effect on recommendations or relationships
+7. A participant can coordinate with a non-Saavii user through a temporary, minimal-data flow
+8. Shared-plan changes re-enter each user's individual execution and replanning loop independently
 
 ## Final product test
 
